@@ -13,12 +13,12 @@
         overflow-x: hidden;
         overflow-y: auto;
         color: #fff;
-        background: url('https://i.imgur.com/EBM3x8B.gif') no-repeat center center fixed;
+        background: url('https://i.imgur.com/CfFkF0S.jpeg') no-repeat center center fixed;
         background-size: cover;
     }
     .overlay {
         position: relative;
-        background-color: rgba(0,0,0,0.5);
+        background-color: rgba(0,0,0,0.4);
         width: 100%;
         height: 100%;
         display: flex;
@@ -33,7 +33,6 @@
     p { font-size: 1.5em; text-align:center; }
     .countdown { font-size: 2em; margin: 20px 0; }
 
-    /* Botões premium com luz se movendo */
     .btn {
         display: inline-block;
         margin: 10px;
@@ -71,7 +70,6 @@
         box-shadow: 0 6px 25px rgba(255,255,255,0.7);
     }
 
-    /* Botão de itens */
     .dropdown {
         position: relative;
         display: inline-block;
@@ -128,6 +126,30 @@
         padding: 2px 6px;
         border-radius: 6px;
     }
+
+    /* Botão de reset */
+    #resetBtn {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.9em;
+        padding: 8px 12px;
+        opacity: 0.5;
+        z-index: 100;
+    }
+    #resetBtn:hover { opacity: 1; }
+
+    /* Bolinhas voando lentamente */
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.7);
+        animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+        0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
+        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
 </style>
 </head>
 <body>
@@ -137,10 +159,8 @@
     <p>Dia do aniversário: <strong>21/11/2025</strong></p>
     <div class="countdown" id="countdown"></div>
     
-    <!-- Botão inicial Confirmar Presença -->
     <button class="btn" id="confirmBtn">Confirmar Presença</button>
 
-    <!-- Botão com itens (inicialmente escondido) -->
     <div class="dropdown" id="itemDropdown" style="display:none;">
         <button class="btn">O que você vai trazer? 🍖🎁</button>
         <div class="dropdown-content">
@@ -153,8 +173,9 @@
     </div>
 </div>
 
+<button id="resetBtn" class="btn">Resetar Contadores</button>
+
 <script>
-    // Contagem regressiva
     const countDownDate = new Date("Nov 21, 2025 00:00:00").getTime();
     setInterval(function() {
         const now = new Date().getTime();
@@ -167,7 +188,6 @@
         if (distance < 0) document.getElementById("countdown").innerHTML = "É HOJE! 😱";
     }, 1000);
 
-    // Confirmar presença
     const confirmBtn = document.getElementById("confirmBtn");
     const itemDropdown = document.getElementById("itemDropdown");
 
@@ -177,7 +197,6 @@
             if(child.id !== "itemDropdown") child.style.display = "none";
         });
         itemDropdown.style.display = "inline-block";
-
         const dropdownButton = itemDropdown.querySelector("button");
         dropdownButton.addEventListener("click", () => {
             const content = itemDropdown.querySelector(".dropdown-content");
@@ -185,7 +204,6 @@
         });
     });
 
-    // Limite de 5 pessoas por item
     const maxPorItem = 5;
     const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {
         "Frango":0,
@@ -202,6 +220,8 @@
             const label = badge.parentElement;
             if(itemCounts[key] >= maxPorItem && key !== "Nenhuma das opções acima") {
                 label.classList.add("disabled");
+            } else {
+                label.classList.remove("disabled");
             }
         }
     }
@@ -211,34 +231,46 @@
     const options = itemDropdown.querySelectorAll('input[name="item"]');
     options.forEach(option => {
         const label = option.parentElement;
-
         option.addEventListener("click", () => {
             const itemEscolhido = option.value;
-
             if(label.classList.contains("disabled")) {
                 alert(itemEscolhido + " já está lotado! Escolha outro item.");
-                return; // Não envia WhatsApp
+                return;
             }
-
             const nome = prompt("Digite seu nome:");
             if(!nome) return alert("Por favor, digite seu nome.");
-
             let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : "1kg de " + itemEscolhido;
-
-            // Incrementa contador se não for "Nenhuma das opções acima"
             if(itemEscolhido !== "Nenhuma das opções acima") {
                 itemCounts[itemEscolhido]++;
                 localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
             }
-
             atualizarContagens();
-
             const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
             const numero = "5521973895209"; 
             const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
             window.open(url, "_blank");
         });
     });
+
+    // Reset button
+    document.getElementById("resetBtn").addEventListener("click", () => {
+        for(const key in itemCounts) itemCounts[key]=0;
+        localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
+        atualizarContagens();
+        alert("Contadores zerados!");
+    });
+
+    // Bolinhas
+    const numBubbles = 20;
+    for(let i=0;i<numBubbles;i++){
+        let bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.style.width = Math.random()*15+10+'px';
+        bubble.style.height = bubble.style.width;
+        bubble.style.left = Math.random()*100+'vw';
+        bubble.style.animationDuration = (Math.random()*20 + 15)+'s'; // mais lento
+        document.body.appendChild(bubble);
+    }
 </script>
 
 </body>
