@@ -29,7 +29,6 @@ body, html {
     z-index: 1;
     text-align: center;
 }
-/* Textos principais rosa premium com brilho */
 h1, p, .countdown {
     color: #ff1493;
     text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff1493, 0 0 30px #ff1493;
@@ -143,6 +142,7 @@ p { font-size: 1.5em; text-align:right; }
     <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn small" target="_blank">Ver no Maps</a>
     
     <button class="btn" id="showDropdownBtn" style="display:none;">O que você vai trazer? 🍖🎁</button>
+    <button class="btn" id="backBtnMain" style="display:none;">← Voltar</button>
 
     <div id="itemDropdown">
         <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
@@ -173,26 +173,34 @@ setInterval(() => {
 
 const confirmBtn = document.getElementById("confirmBtn");
 const showDropdownBtn = document.getElementById("showDropdownBtn");
+const backBtnMain = document.getElementById("backBtnMain");
 const itemDropdown = document.getElementById("itemDropdown");
 const overlay = document.getElementById("overlay");
 const backBtn = document.getElementById("backBtn");
 
 confirmBtn.addEventListener("click", () => {
     Array.from(overlay.children).forEach(child => {
-        if(child.id !== "showDropdownBtn" && child.id !== "itemDropdown") child.style.display = "none";
+        if(child.id !== "showDropdownBtn" && child.id !== "backBtnMain" && child.id !== "itemDropdown") child.style.display = "none";
     });
     confirmBtn.style.display = "none";
     showDropdownBtn.style.display = "inline-block";
+    backBtnMain.style.display = "inline-block";
 });
 
 showDropdownBtn.addEventListener("click", () => {
     itemDropdown.style.display = "block";
     showDropdownBtn.style.display = "none";
+    backBtnMain.style.display = "none";
 });
 
 backBtn.addEventListener("click", () => {
     itemDropdown.style.display = "none";
     showDropdownBtn.style.display = "inline-block";
+    backBtnMain.style.display = "inline-block";
+});
+
+backBtnMain.addEventListener("click", () => {
+    location.reload();
 });
 
 const maxPorItem = 5;
