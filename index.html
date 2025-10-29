@@ -12,36 +12,43 @@
         font-family: Arial, sans-serif;
         overflow-x: hidden;
         overflow-y: auto;
+        color: #fff;
         background: url('https://i.imgur.com/CfFkF0S.jpeg') no-repeat center center fixed;
         background-size: cover;
-        color: #ff69b4; /* rosa pink */
-        text-shadow: 0 0 10px #fff;
     }
-
     .overlay {
         position: relative;
+        background-color: rgba(0,0,0,0.4);
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: flex-end; /* textos mais para direita */
+        align-items: flex-end; /* textos alinhados à direita */
         padding: 20px;
         z-index: 1;
+        text-align: right; /* textos do overlay alinhados à direita */
     }
-
     h1 { font-size: 3em; margin-bottom: 0.2em; }
     p { font-size: 1.5em; }
     .countdown { font-size: 2em; margin: 20px 0; }
 
-    /* Botões */
+    /* Ajuste h1, p e countdown para celulares */
+    @media (max-width: 600px) {
+        .overlay {
+            align-items: flex-end;
+            text-align: right;
+            padding-right: 10%;
+        }
+    }
+
     .btn {
         display: inline-block;
         margin: 10px;
-        padding: 12px 24px;
-        font-size: 1.1em;
+        padding: 15px 30px;
+        font-size: 1.2em;
         color: #fff;
-        background: linear-gradient(120deg, #ff69b4, #ff1493, #ff69b4);
+        background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
         background-size: 200% 200%;
         border: none;
         border-radius: 12px;
@@ -67,23 +74,38 @@
         0% { transform: translateX(-100%) rotate(25deg); }
         100% { transform: translateX(100%) rotate(25deg); }
     }
-    .btn:hover { transform: scale(1.1); }
+    .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(255,255,255,0.7);
+    }
 
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        margin-top: 20px;
+    }
     .dropdown-content {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
+        display: none;
+        position: absolute;
+        background-color: rgba(0,0,0,0.85);
+        min-width: 220px;
+        border-radius: 12px;
+        padding: 10px;
         z-index: 2;
+        text-align: left;
     }
     .dropdown-content label {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 1em;
+        margin: 8px 0;
+        font-size: 1.1em;
+        cursor: pointer;
         padding: 5px 10px;
         border-radius: 8px;
-        background: linear-gradient(120deg, #ff69b4, #ff1493, #ff69b4);
+        transition: 0.2s;
+        background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
+        background-size: 200% 200%;
         position: relative;
         overflow: hidden;
     }
@@ -98,9 +120,22 @@
         transform: rotate(25deg);
         animation: shineMove 3s linear infinite;
     }
-    .disabled { opacity: 0.5; pointer-events: none; }
+    .dropdown-content label:hover:not(.disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(255,255,255,0.5);
+    }
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+    .count-badge {
+        font-size: 0.9em;
+        background-color: rgba(0,0,0,0.6);
+        padding: 2px 6px;
+        border-radius: 6px;
+    }
 
-    /* Botão invisível de reset */
     #resetBtn {
         position: fixed;
         top: 10px;
@@ -115,7 +150,6 @@
         cursor: pointer;
     }
 
-    /* Bolinhas (neve) sobre toda a tela */
     #bubblesContainer {
         position: fixed;
         top: 0;
@@ -145,18 +179,19 @@
     <div class="countdown" id="countdown"></div>
     
     <button class="btn" id="confirmBtn">Confirmar Presença</button>
-    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank" id="mapsBtn">Ver no Maps</a>
+    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
 
-    <div class="dropdown" id="itemDropdown" style="display:none; align-items: flex-end;">
-        <div class="dropdown-content" id="itemsContainer">
+    <div class="dropdown" id="itemDropdown" style="display:none;">
+        <button class="btn">O que você vai trazer? 🍖🎁</button>
+        <div class="dropdown-content">
             <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
-            <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Carne">0/5</span></label>
+            <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
         </div>
-        <button class="btn" id="backBtn" style="align-self: flex-start;">← Voltar</button>
+        <button class="btn" id="backBtn" style="margin-top: 15px;">← Voltar</button>
     </div>
 </div>
 
@@ -164,35 +199,53 @@
 <div id="bubblesContainer"></div>
 
 <script>
-const countDownDate = new Date("Nov 23, 2025 00:00:00").getTime();
-setInterval(() => {
-    const now = new Date().getTime();
-    const distance = countDownDate - now;
-    const days = Math.floor(distance / (1000*60*60*24));
-    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-    const seconds = Math.floor((distance % (1000*60)) / 1000);
-    document.getElementById("countdown").innerHTML = `${days} dias ${hours}h ${minutes}m ${seconds}s`;
-    if(distance < 0) document.getElementById("countdown").innerHTML = "É HOJE! 😱";
-},1000);
+    const countDownDate = new Date("Nov 23, 2025 00:00:00").getTime();
+    setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("countdown").innerHTML = days + " dias " + hours + "h " + minutes + "m " + seconds + "s ";
+        if (distance < 0) document.getElementById("countdown").innerHTML = "É HOJE! 😱";
+    }, 1000);
 
-const confirmBtn = document.getElementById("confirmBtn");
-const mapsBtn = document.getElementById("mapsBtn");
-const itemDropdown = document.getElementById("itemDropdown");
-const backBtn = document.getElementById("backBtn");
-const overlay = document.getElementById("overlay");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const itemDropdown = document.getElementById("itemDropdown");
+    const overlay = document.getElementById("overlay");
+    const backBtn = document.getElementById("backBtn");
 
-confirmBtn.addEventListener("click", () => {
-    confirmBtn.style.display = "none";
-    mapsBtn.style.display = "none";
-    itemDropdown.style.display = "flex";
-});
+    confirmBtn.addEventListener("click", () => {
+        Array.from(overlay.children).forEach(child => {
+            if(child.id !== "itemDropdown") child.style.display = "none";
+        });
+        itemDropdown.style.display = "inline-block";
+        const dropdownButton = itemDropdown.querySelector("button");
+        dropdownButton.addEventListener("click", () => {
+            const content = itemDropdown.querySelector(".dropdown-content");
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        });
+    });
 
-backBtn.addEventListener("click", () => {
-    itemDropdown.style.display = "none";
-    confirmBtn.style.display = "inline-block";
-    mapsBtn.style.display = "inline-block";
-});
+    backBtn.addEventListener("click", () => {
+        itemDropdown.style.display = "none";
+        Array.from(overlay.children).forEach(child => {
+            if(child.id !== "itemDropdown") child.style.display = "block";
+        });
+    });
 
-const maxPorItem = 5;
-const itemCounts = JSON.parse(localStorage.getItem
+    const maxPorItem = 5;
+    const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {
+        "Frango":0, "Linguiça":0, "Salsichão":0, "Pão de alho":0, "Nenhuma das opções acima":0
+    };
+
+    function atualizarContagens() {
+        for(const key in itemCounts) {
+            const badge = document.getElementById("count-" + key);
+            badge.textContent = itemCounts[key] + "/" + maxPorItem;
+            const label = badge.parentElement;
+            if(itemCounts[key] >= maxPorItem && key !== "Nenhuma das opções acima") {
+                label.classList.add("disabled");
+            } else {
+                label.classList.remove("disabled");
