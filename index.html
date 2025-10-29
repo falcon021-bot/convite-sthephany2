@@ -127,7 +127,6 @@
         border-radius: 6px;
     }
 
-    /* Botão de reset transparente no topo */
     #resetBtn {
         position: fixed;
         top: 10px;
@@ -142,7 +141,7 @@
         cursor: pointer;
     }
 
-    /* Bolinhas voando sobre toda a tela */
+    /* Bolinhas (neve) sobre toda a tela */
     #bubblesContainer {
         position: fixed;
         top: 0;
@@ -156,11 +155,11 @@
         position: absolute;
         border-radius: 50%;
         background: rgba(255,255,255,0.7);
-        animation: floatUp linear infinite;
+        animation: fallDown linear infinite;
     }
-    @keyframes floatUp {
-        0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
-        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    @keyframes fallDown {
+        0% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+        100% { transform: translateY(100vh) scale(1); opacity: 0.7; }
     }
 </style>
 </head>
@@ -179,9 +178,9 @@
         <div class="dropdown-content">
             <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
-            <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
+            <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
         </div>
     </div>
@@ -189,11 +188,10 @@
 
 <button id="resetBtn">Resetar Contadores</button>
 
-<!-- Container das bolinhas -->
 <div id="bubblesContainer"></div>
 
 <script>
-    const countDownDate = new Date("Nov 21, 2025 00:00:00").getTime();
+    const countDownDate = new Date("Nov 23, 2025 00:00:00").getTime();
     setInterval(function() {
         const now = new Date().getTime();
         const distance = countDownDate - now;
@@ -269,7 +267,6 @@
         });
     });
 
-    // Reset button transparente
     document.getElementById("resetBtn").addEventListener("click", () => {
         for(const key in itemCounts) itemCounts[key]=0;
         localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
@@ -277,7 +274,7 @@
         alert("Contadores zerados!");
     });
 
-    // Bolinhas (neve) sobre toda a tela
+    // Bolinhas (neve) caindo de cima para baixo
     const bubblesContainer = document.getElementById('bubblesContainer');
     const numBubbles = 30;
     for(let i=0;i<numBubbles;i++){
@@ -287,6 +284,7 @@
         bubble.style.height = bubble.style.width;
         bubble.style.left = Math.random()*100+'vw';
         bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
+        bubble.style.top = Math.random()*-10+'vh'; // começa acima da tela
         bubblesContainer.appendChild(bubble);
     }
 </script>
