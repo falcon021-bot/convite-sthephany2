@@ -29,9 +29,24 @@
         z-index: 1;
         text-align: center;
     }
-    h1 { font-size: 3em; margin-bottom: 0.2em; text-align:center; }
+    h1 { 
+        font-size: 3em; 
+        margin-bottom: 0.2em; 
+        text-align:center; 
+        transition: 0.3s; 
+    }
     p { font-size: 1.5em; text-align:center; }
     .countdown { font-size: 2em; margin: 20px 0; }
+
+    /* Ajuste responsivo para celulares: desloca o h1 levemente para a esquerda */
+    @media (max-width: 600px) {
+        h1 {
+            text-align: left;
+            margin-left: 10px;
+            font-size: 2.5em;
+        }
+        p { text-align: left; margin-left: 10px; font-size: 1.3em; }
+    }
 
     .btn {
         display: inline-block;
@@ -262,32 +277,4 @@
             atualizarContagens();
             const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
             const numero = "5521973895209"; 
-            const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
-            window.open(url, "_blank");
-        });
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-        for(const key in itemCounts) itemCounts[key]=0;
-        localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-        atualizarContagens();
-        alert("Contadores zerados!");
-    });
-
-    // Bolinhas (neve) caindo de cima para baixo
-    const bubblesContainer = document.getElementById('bubblesContainer');
-    const numBubbles = 30;
-    for(let i=0;i<numBubbles;i++){
-        let bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.style.width = Math.random()*15+10+'px';
-        bubble.style.height = bubble.style.width;
-        bubble.style.left = Math.random()*100+'vw';
-        bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
-        bubble.style.top = Math.random()*-10+'vh'; // começa acima da tela
-        bubblesContainer.appendChild(bubble);
-    }
-</script>
-
-</body>
-</html>
+            const url = `https
