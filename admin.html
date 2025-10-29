@@ -1,0 +1,109 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Painel de Confirmados — Sthephany</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="admin">
+  <main class="admin-container">
+    <h1>Painel de Confirmados</h1>
+    <div id="login-area">
+      <p>Insira a senha para acessar a lista privada:</p>
+      <input id="admin-pass" type="password" placeholder="Senha" />
+      <button id="btn-unlock" class="btn">Entrar</button>
+      <p class="hint">Senha fornecida: <strong>2114</strong></p>
+    </div>
+
+    <div id="panel" class="hidden">
+      <p><strong>Convidados confirmados:</strong></p>
+      <table id="list-table">
+        <thead><tr><th>Nome</th><th>Item</th><th>Hora</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="panel-actions">
+        <button id="refresh" class="btn btn-outline">Atualizar</button>
+        <button id="clear-local" class="btn">Limpar cache local</button>
+      </div>
+    </div>
+
+    <p class="smallprint">Dados salvos no Firebase Firestore (coleção: <code>confirmados</code>).</p>
+  </main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB0nY1i34KvrgPIUPygQPlJGKA3DNBGTa0",
+  authDomain: "aniversario-sthe2.firebaseapp.com",
+  projectId: "aniversario-sthe2",
+  storageBucket: "aniversario-sthe2.firebasestorage.app",
+  messagingSenderId: "104274841847",
+  appId: "1:104274841847:web:120448b49dfe4c2cdf83f2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const PASS = "2114";
+const unlockBtn = document.getElementById("btn-unlock");
+const passInput = document.getElementById("admin-pass");
+const panel = document.getElementById("panel");
+const loginArea = document.getElementById("login-area");
+const tbody = document.querySelector("#list-table tbody");
+const refreshBtn = document.getElementById("refresh");
+const clearBtn = document.getElementById("clear-local");
+
+unlockBtn.addEventListener("click", async () => {
+  if (passInput.value === PASS) {
+    loginArea.classList.add("hidden");
+    panel.classList.remove("hidden");
+    await loadList();
+  } else {
+    alert("Senha incorreta.");
+  }
+});
+
+refreshBtn.addEventListener("click", loadList);
+clearBtn.addEventListener("click", () => {
+  localStorage.removeItem("rsvp_preview");
+  alert("Cache local limpo.");
+});
+
+async function loadList() {
+  tbody.innerHTML = "<tr><td colspan='3'>Carregando...</td></tr>";
+  try {
+    const c = collection(db, "confirmados");
+    const q = query(c, orderBy("timestamp", "desc"));
+    const snap = await getDocs(q);
+    tbody.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      const tr = document.createElement("tr");
+      const nameTd = document.createElement("td");
+      nameTd.textContent = d.name || "";
+      const itemTd = document.createElement("td");
+      itemTd.textContent = d.item || "";
+      const timeTd = document.createElement("td");
+      const t = d.timestamp && d.timestamp.toDate ? d.timestamp.toDate().toLocaleString() : "";
+      timeTd.textContent = t;
+      tr.appendChild(nameTd);
+      tr.appendChild(itemTd);
+      tr.appendChild(timeTd);
+      tbody.appendChild(tr);
+    });
+    if (tbody.children.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='3'>Nenhuma confirmação ainda.</td></tr>";
+    }
+  } catch (err) {
+    tbody.innerHTML = "<tr><td colspan='3'>Erro ao carregar: " + err.message + "</td></tr>";
+    console.error(err);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+
+:root{
+  --accent:#ff0066;
+  --accent2:#ffb400;
+  --glass: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:#000;color:#fff}
+video#bgvideo{position:fixed;right:0;bottom:0;min-width:100%;min-height:100%;z-index:-2;object-fit:cover}
+.overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.55));z-index:-1}
+.container{position:relative;z-index:2;max-width:900px;margin:2.5rem auto;padding:2rem;text-align:center}
+.title{font-family:'Pacifico',cursive;font-size:2.6rem;margin:0;color:var(--accent);text-shadow:0 6px 18px rgba(255,0,102,0.12)}
+.title .name{display:inline-block;padding:0.2rem 0.6rem;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))}
+.subtitle{margin:0.7rem 0 1.2rem;font-size:1.15rem;opacity:0.95}
+.countdown{display:flex;gap:12px;justify-content:center;margin:1rem 0 0.8rem}
+.countdown div{background:rgba(255,255,255,0.06);padding:12px 14px;border-radius:10px;min-width:70px}
+.countdown span{display:block;font-size:1.4rem;font-weight:700}
+.countdown small{opacity:0.85;font-size:0.8rem}
+.buttons{margin:1.2rem 0}
+.btn{background:var(--accent2);color:#111;border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;margin:0 8px;transition:transform .18s ease,box-shadow .18s}
+.btn:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(0,0,0,0.35)}
+.btn-outline{background:transparent;border:2px solid rgba(255,255,255,0.12);color:#fff}
+.btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:white}
+.card{margin:20px auto;padding:18px;background:var(--glass);border-radius:14px;backdrop-filter:blur(6px);width:100%;max-width:520px;text-align:left}
+.hidden{display:none}
+#rsvp-form input,#rsvp-form select{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#fff}
+.form-actions{margin-top:12px;text-align:right}
+.event-info{margin-top:22px;opacity:0.95}
+.smallprint{margin-top:12px;font-size:0.85rem;opacity:0.9}
