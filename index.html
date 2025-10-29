@@ -127,7 +127,6 @@
         border-radius: 6px;
     }
 
-    /* Botão de reset */
     #resetBtn {
         position: fixed;
         bottom: 10px;
@@ -139,7 +138,6 @@
     }
     #resetBtn:hover { opacity: 1; }
 
-    /* Bolinhas voando lentamente */
     .bubble {
         position: absolute;
         border-radius: 50%;
@@ -160,6 +158,7 @@
     <div class="countdown" id="countdown"></div>
     
     <button class="btn" id="confirmBtn">Confirmar Presença</button>
+    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
 
     <div class="dropdown" id="itemDropdown" style="display:none;">
         <button class="btn">O que você vai trazer? 🍖🎁</button>
@@ -169,7 +168,7 @@
             <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
             <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
-            <label><input type="radio" name="item" value="Vou enviar R$15,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$15,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
+            <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
         </div>
     </div>
 </div>
@@ -240,7 +239,7 @@
             }
             const nome = prompt("Digite seu nome:");
             if(!nome) return alert("Por favor, digite seu nome.");
-            let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : "1kg de " + itemEscolhido;
+            let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : itemEscolhido;
             if(itemEscolhido !== "Nenhuma das opções acima") {
                 itemCounts[itemEscolhido]++;
                 localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
