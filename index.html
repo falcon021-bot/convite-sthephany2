@@ -6,17 +6,16 @@
 <title>Convite Interativo</title>
 <style>
     body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden;
-    overflow-y: auto;
-    color: #fff;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        overflow-y: auto;
+        color: #fff;
         background: url('https://i.imgur.com/EBM3x8B.gif') no-repeat center center fixed;
         background-size: cover;
     }
-    /* Overlay escura */
     .overlay {
         position: relative;
         background-color: rgba(0,0,0,0.5);
@@ -28,35 +27,42 @@
         align-items: center;
         padding: 20px;
         z-index: 1;
+        text-align: center;
     }
     h1 { font-size: 3em; margin-bottom: 0.2em; text-align:center; }
     p { font-size: 1.5em; text-align:center; }
     .countdown { font-size: 2em; margin: 20px 0; }
+
+    /* Botões dourados com brilho */
     .btn {
         display: inline-block;
         margin: 10px;
         padding: 15px 30px;
         font-size: 1.2em;
         color: #fff;
-        background-color: #e63946;
+        background: linear-gradient(135deg, #d4af37, #ffd700, #f0e68c, #d4af37);
+        background-size: 400% 400%;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         cursor: pointer;
         text-decoration: none;
-        transition: 0.3s;
+        transition: 0.3s all ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    .btn:hover { background-color: #f77f00; }
-    /* Bolinhas animadas */
-    .bubble {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.7);
-        animation: floatUp linear infinite;
+    /* Animação do brilho passando */
+    .btn {
+        animation: shine 3s linear infinite;
     }
-    @keyframes floatUp {
-        0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
-        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    @keyframes shine {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
+    .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255,255,255,0.6);
+    }
+
     /* Botão de itens */
     .dropdown {
         position: relative;
@@ -66,41 +72,50 @@
     .dropdown-content {
         display: none;
         position: absolute;
-        background-color: rgba(0,0,0,0.8);
-        min-width: 200px;
-        border-radius: 10px;
+        background-color: rgba(0,0,0,0.85);
+        min-width: 220px;
+        border-radius: 12px;
         padding: 10px;
         z-index: 2;
         text-align: left;
     }
     .dropdown-content label {
         display: block;
-        margin: 5px 0;
+        margin: 8px 0;
         font-size: 1.1em;
         cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 8px;
+        transition: 0.2s;
+        background: linear-gradient(135deg, #d4af37, #ffd700, #f0e68c, #d4af37);
+        background-size: 400% 400%;
+        animation: shine 3s linear infinite;
     }
-    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown-content label:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(255,255,255,0.5);
+    }
 </style>
 </head>
 <body>
 
-<div class="overlay">
+<div class="overlay" id="overlay">
     <h1>Chamei, hein! Agora falta você confirmar 🥳🎂</h1>
     <p>Dia do aniversário: <strong>21/11/2025</strong></p>
     <div class="countdown" id="countdown"></div>
     
-    <a href="https://api.whatsapp.com/send?phone=5521973895209&text=Quero confirmar presença!" class="btn" target="_blank">Confirmar Presença</a>
-    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
-    
-    <!-- Botão com itens -->
-    <div class="dropdown">
+    <!-- Botão inicial Confirmar Presença -->
+    <button class="btn" id="confirmBtn">Confirmar Presença</button>
+
+    <!-- Botão com itens (inicialmente escondido) -->
+    <div class="dropdown" id="itemDropdown" style="display:none;">
         <button class="btn">O que você vai trazer? 🍖🎁</button>
         <div class="dropdown-content">
-            <label><input type="checkbox" name="item" value="Frango"> Frango</label>
-            <label><input type="checkbox" name="item" value="Linguiça"> Linguiça</label>
-            <label><input type="checkbox" name="item" value="Salsichão"> Salsichão</label>
-            <label><input type="checkbox" name="item" value="Pão de alho"> Pão de alho</label>
-            <label><input type="checkbox" name="item" value="Nenhuma das opções acima"> Nenhuma das opções acima</label>
+            <label><input type="radio" name="item" value="Frango"> Frango</label>
+            <label><input type="radio" name="item" value="Linguiça"> Linguiça</label>
+            <label><input type="radio" name="item" value="Salsichão"> Salsichão</label>
+            <label><input type="radio" name="item" value="Pão de alho"> Pão de alho</label>
+            <label><input type="radio" name="item" value="Nenhuma das opções acima"> Nenhuma das opções acima</label>
         </div>
     </div>
 </div>
@@ -119,17 +134,36 @@
         if (distance < 0) document.getElementById("countdown").innerHTML = "É HOJE! 😱";
     }, 1000);
 
-    // Bolinhas animadas
-    const numBubbles = 30;
-    for(let i=0; i<numBubbles; i++){
-        let bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.style.width = Math.random()*20 + 10 + 'px';
-        bubble.style.height = bubble.style.width;
-        bubble.style.left = Math.random()*100 + 'vw';
-        bubble.style.animationDuration = (Math.random()*5 + 5) + 's';
-        document.body.appendChild(bubble);
-    }
+    // Confirmar presença
+    const confirmBtn = document.getElementById("confirmBtn");
+    const itemDropdown = document.getElementById("itemDropdown");
+
+    confirmBtn.addEventListener("click", () => {
+        const overlay = document.getElementById("overlay");
+        Array.from(overlay.children).forEach(child => {
+            if(child.id !== "itemDropdown") child.style.display = "none";
+        });
+        itemDropdown.style.display = "inline-block";
+        // Mostra dropdown ao clicar no botão
+        const dropdownButton = itemDropdown.querySelector("button");
+        dropdownButton.addEventListener("click", () => {
+            const content = itemDropdown.querySelector(".dropdown-content");
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        });
+    });
+
+    // Enviar WhatsApp ao escolher item
+    const options = itemDropdown.querySelectorAll('input[name="item"]');
+    options.forEach(option => {
+        option.addEventListener("click", () => {
+            const nome = prompt("Digite seu nome:");
+            if(!nome) return alert("Por favor, digite seu nome.");
+            const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${option.value}`;
+            const numero = "5521973895209"; // número do WhatsApp
+            const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
+            window.open(url, "_blank");
+        });
+    });
 </script>
 
 </body>
