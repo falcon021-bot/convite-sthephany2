@@ -29,13 +29,21 @@
         z-index: 1;
         text-align: center;
     }
+
+    /* Textos principais rosa premium com brilho */
+    h1, p, .countdown {
+        color: #ff1493; /* Pink premium */
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff1493, 0 0 30px #ff1493;
+    }
+
     h1 { font-size: 3em; margin-bottom: 0.2em; text-align:center; }
     p { font-size: 1.5em; text-align:center; }
     .countdown { font-size: 2em; margin: 20px 0; }
 
-    /* Ajuste h1 para celular */
     @media (max-width: 600px) {
         h1 { text-align: left; margin-left: 10%; }
+        p { text-align: left; margin-left: 10%; }
+        .countdown { text-align: left; margin-left: 10%; }
     }
 
     .btn {
@@ -82,7 +90,7 @@
     }
     .dropdown-content {
         display: none;
-        position: absolute;
+        position: relative;
         background-color: rgba(0,0,0,0.85);
         min-width: 220px;
         border-radius: 12px;
@@ -146,7 +154,6 @@
         cursor: pointer;
     }
 
-    /* Bolinhas (neve) sobre toda a tela */
     #bubblesContainer {
         position: fixed;
         top: 0;
@@ -179,7 +186,6 @@
     <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
 
     <div class="dropdown" id="itemDropdown" style="display:none;">
-        <button class="btn">O que você vai trazer? 🍖🎁</button>
         <div class="dropdown-content">
             <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
             <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
@@ -217,12 +223,7 @@
         Array.from(overlay.children).forEach(child => {
             if(child.id !== "itemDropdown") child.style.display = "none";
         });
-        itemDropdown.style.display = "inline-block";
-        const dropdownButton = itemDropdown.querySelector("button");
-        dropdownButton.addEventListener("click", () => {
-            const content = itemDropdown.querySelector(".dropdown-content");
-            content.style.display = content.style.display === "block" ? "none" : "block";
-        });
+        itemDropdown.style.display = "block";
     });
 
     backBtn.addEventListener("click", () => {
