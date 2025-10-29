@@ -29,7 +29,6 @@ body, html {
     z-index: 1;
     text-align: center;
 }
-/* Textos com brilho rosa */
 h1, p, .countdown {
     color: #ff1493;
     text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff1493, 0 0 30px #ff1493;
@@ -40,15 +39,13 @@ p { font-size: 1.5em; text-align:right; }
 
 @media (max-width: 600px) {
     h1, p, .countdown { text-align:right; margin-right: 10%; }
-    .btn { width: 85%; font-size: 1em; padding: 12px 10px; }
-    #itemDropdown label { width: 85%; font-size: 1em; padding: 10px; }
 }
 
 .btn {
     display: inline-block;
     margin: 10px;
-    padding: 15px 30px;
-    font-size: 1.2em;
+    padding: 14px 25px;
+    font-size: 1.1em;
     color: #fff;
     background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
     background-size: 200% 200%;
@@ -78,6 +75,11 @@ p { font-size: 1.5em; text-align:right; }
 }
 .btn:hover { transform: scale(1.1); box-shadow: 0 6px 25px rgba(255,255,255,0.7); }
 
+.btn-small {
+    padding: 10px 20px;
+    font-size: 0.9em;
+}
+
 #itemDropdown {
     display: none;
     position: relative;
@@ -90,8 +92,8 @@ p { font-size: 1.5em; text-align:right; }
     margin: 8px 0;
     font-size: 1.1em;
     cursor: pointer;
-    padding: 10px 15px;
-    border-radius: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
     transition: 0.2s;
     background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
     background-size: 200% 200%;
@@ -114,143 +116,26 @@ p { font-size: 1.5em; text-align:right; }
     box-shadow: 0 4px 12px rgba(255,255,255,0.5);
 }
 .disabled { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
-.count-badge { font-size: 0.9em; padding: 2px 6px; border-radius: 6px; }
+.count-badge { font-size: 0.9em; background-color: rgba(0,0,0,0.0); padding: 2px 6px; border-radius: 6px; }
+
+#backBtn {
+    display: block;
+    width: 100%;
+    max-width: 350px;
+    margin: 15px auto 0 auto;
+    text-align: center;
+}
 
 #resetBtn { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); font-size: 0.9em; padding: 8px 12px; background: transparent; border: none; color: transparent; z-index: 1000; cursor: pointer; }
 
 #bubblesContainer { position: fixed; top:0; left:0; width:100%; height:100%; z-index:998; pointer-events:none; }
 .bubble { position:absolute; border-radius:50%; background:rgba(255,255,255,0.7); animation:fallDown linear infinite; }
-@keyframes fallDown { 0% { transform: translateY(-10vh) scale(0.5); opacity:0; } 100% { transform: translateY(100vh) scale(1); opacity:0.7; } }
+@keyframes fallDown { 0% { transform: translateY(-10vh) scale(0.5); opacity:0; } 100% { transform: translateY(100vh) scale(1); opacity:0.7; }
+}
 </style>
 </head>
 <body>
 
 <div class="overlay" id="overlay">
     <h1>Chamei, hein! Agora falta você confirmar 🥳🎂</h1>
-    <p>Dia do aniversário: <strong>23/11/2025</strong></p>
-    <div class="countdown" id="countdown"></div>
-    
-    <button class="btn" id="confirmBtn">Confirmar Presença</button>
-    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
-    
-    <button class="btn" id="showDropdownBtn" style="display:none;">O que você vai trazer? 🍖🎁</button>
-    <button class="btn" id="backMainBtn" style="display:none;">← Voltar</button>
-
-    <div id="itemDropdown">
-        <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
-        <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
-        <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
-        <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
-        <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Carne">0/5</span></label>
-        <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
-        <button class="btn" id="backBtn" style="margin-top:15px;">← Voltar</button>
-    </div>
-</div>
-
-<button id="resetBtn">Resetar Contadores</button>
-<div id="bubblesContainer"></div>
-
-<script>
-const countDownDate = new Date("Nov 23, 2025 00:00:00").getTime();
-setInterval(() => {
-    const now = new Date().getTime();
-    const distance = countDownDate - now;
-    const days = Math.floor(distance / (1000*60*60*24));
-    const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-    const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-    const seconds = Math.floor((distance % (1000*60)) / 1000);
-    document.getElementById("countdown").innerHTML = distance>0? `${days} dias ${hours}h ${minutes}m ${seconds}s`: "É HOJE! 😱";
-}, 1000);
-
-const confirmBtn = document.getElementById("confirmBtn");
-const showDropdownBtn = document.getElementById("showDropdownBtn");
-const backMainBtn = document.getElementById("backMainBtn");
-const itemDropdown = document.getElementById("itemDropdown");
-const overlay = document.getElementById("overlay");
-const backBtn = document.getElementById("backBtn");
-
-confirmBtn.addEventListener("click", () => {
-    Array.from(overlay.children).forEach(child => {
-        if(child.id !== "showDropdownBtn" && child.id !== "itemDropdown" && child.id !== "backMainBtn") child.style.display = "none";
-    });
-    showDropdownBtn.style.display = "inline-block";
-    backMainBtn.style.display = "inline-block";
-});
-
-showDropdownBtn.addEventListener("click", () => {
-    itemDropdown.style.display = "block";
-    showDropdownBtn.style.display = "none";
-    backMainBtn.style.display = "none";
-});
-
-backBtn.addEventListener("click", () => {
-    itemDropdown.style.display = "none";
-    showDropdownBtn.style.display = "inline-block";
-    backMainBtn.style.display = "inline-block";
-});
-
-backMainBtn.addEventListener("click", () => {
-    location.reload();
-});
-
-const maxPorItem = 5;
-const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {
-    "Frango":0, "Linguiça":0, "Salsichão":0, "Pão de alho":0, "Carne":0, "Nenhuma":0
-};
-
-function atualizarContagens() {
-    for(const key in itemCounts){
-        const badge = document.getElementById("count-" + key);
-        if(badge) badge.textContent = itemCounts[key] + "/" + maxPorItem;
-        const label = badge?.parentElement;
-        if(label){
-            if(itemCounts[key]>=maxPorItem && key!=="Nenhuma") label.classList.add("disabled");
-            else label.classList.remove("disabled");
-        }
-    }
-}
-atualizarContagens();
-
-const options = itemDropdown.querySelectorAll('input[name="item"]');
-options.forEach(option => {
-    option.addEventListener("click", () => {
-        const label = option.parentElement;
-        const itemEscolhido = option.value;
-        if(label.classList.contains("disabled")){
-            alert(itemEscolhido + " já está lotado! Escolha outro item.");
-            return;
-        }
-        const nome = prompt("Digite seu nome:");
-        if(!nome) return alert("Por favor, digite seu nome.");
-        if(itemEscolhido!=="Nenhuma das opções acima") itemCounts[itemEscolhido] = (itemCounts[itemEscolhido] || 0) + 1;
-        localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-        atualizarContagens();
-        const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${itemEscolhido}`;
-        const numero = "5521973895209";
-        const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
-        window.open(url, "_blank");
-    });
-});
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-    for(const key in itemCounts) itemCounts[key]=0;
-    localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-    atualizarContagens();
-    alert("Contadores zerados!");
-});
-
-const bubblesContainer = document.getElementById('bubblesContainer');
-for(let i=0;i<30;i++){
-    let bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-    bubble.style.width = Math.random()*15+10+'px';
-    bubble.style.height = bubble.style.width;
-    bubble.style.left = Math.random()*100+'vw';
-    bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
-    bubble.style.top = Math.random()*-10+'vh';
-    bubblesContainer.appendChild(bubble);
-}
-</script>
-
-</body>
-</html>
+    <p>Dia do aniversário: <strong>23/11/2025</strong
