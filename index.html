@@ -33,34 +33,42 @@
     p { font-size: 1.5em; text-align:center; }
     .countdown { font-size: 2em; margin: 20px 0; }
 
-    /* Botões dourados com brilho */
+    /* Botões premium com luz se movendo */
     .btn {
         display: inline-block;
         margin: 10px;
         padding: 15px 30px;
         font-size: 1.2em;
         color: #fff;
-        background: linear-gradient(135deg, #d4af37, #ffd700, #f0e68c, #d4af37);
-        background-size: 400% 400%;
+        background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
+        background-size: 200% 200%;
         border: none;
         border-radius: 12px;
         cursor: pointer;
         text-decoration: none;
         transition: 0.3s all ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
     }
-    /* Animação do brilho passando */
-    .btn {
-        animation: shine 3s linear infinite;
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(120deg, rgba(255,255,255,0.3), rgba(255,255,255,0) 60%);
+        transform: rotate(25deg);
+        animation: shineMove 3s linear infinite;
     }
-    @keyframes shine {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    @keyframes shineMove {
+        0% { transform: translateX(-100%) rotate(25deg); }
+        100% { transform: translateX(100%) rotate(25deg); }
     }
     .btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(255,255,255,0.6);
+        box-shadow: 0 6px 25px rgba(255,255,255,0.7);
     }
 
     /* Botão de itens */
@@ -87,13 +95,30 @@
         padding: 5px 10px;
         border-radius: 8px;
         transition: 0.2s;
-        background: linear-gradient(135deg, #d4af37, #ffd700, #f0e68c, #d4af37);
-        background-size: 400% 400%;
-        animation: shine 3s linear infinite;
+        background: linear-gradient(120deg, #d4af37, #ffd700, #f0e68c, #d4af37);
+        background-size: 200% 200%;
+        position: relative;
+        overflow: hidden;
     }
-    .dropdown-content label:hover {
+    .dropdown-content label::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(120deg, rgba(255,255,255,0.3), rgba(255,255,255,0) 60%);
+        transform: rotate(25deg);
+        animation: shineMove 3s linear infinite;
+    }
+    .dropdown-content label:hover:not(.disabled) {
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(255,255,255,0.5);
+    }
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
     }
 </style>
 </head>
@@ -144,7 +169,7 @@
             if(child.id !== "itemDropdown") child.style.display = "none";
         });
         itemDropdown.style.display = "inline-block";
-        // Mostra dropdown ao clicar no botão
+
         const dropdownButton = itemDropdown.querySelector("button");
         dropdownButton.addEventListener("click", () => {
             const content = itemDropdown.querySelector(".dropdown-content");
@@ -152,14 +177,42 @@
         });
     });
 
-    // Enviar WhatsApp ao escolher item
+    // Limite de 5 pessoas por item
+    const maxPorItem = 5;
+    const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {};
+
     const options = itemDropdown.querySelectorAll('input[name="item"]');
     options.forEach(option => {
+        const label = option.parentElement;
+
+        // Atualiza o estado se já estiver lotado
+        if(option.value !== "Nenhuma das opções acima") {
+            if(!itemCounts[option.value]) itemCounts[option.value] = 0;
+            if(itemCounts[option.value] >= maxPorItem) label.classList.add("disabled");
+        }
+
         option.addEventListener("click", () => {
+            if(label.classList.contains("disabled")) return;
+
             const nome = prompt("Digite seu nome:");
             if(!nome) return alert("Por favor, digite seu nome.");
-            const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${option.value}`;
-            const numero = "5521973895209"; // número do WhatsApp
+
+            let itemEscolhido = option.value;
+            let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : "1kg de " + itemEscolhido;
+
+            // Incrementa contador se não for "Nenhuma das opções acima"
+            if(itemEscolhido !== "Nenhuma das opções acima") {
+                itemCounts[itemEscolhido]++;
+                localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
+                if(itemCounts[itemEscolhido] >= maxPorItem) {
+                    label.classList.add("disabled");
+                    option.checked = false;
+                    alert(itemEscolhido + " está lotado!");
+                }
+            }
+
+            const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
+            const numero = "5521973895209"; 
             const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
             window.open(url, "_blank");
         });
