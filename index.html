@@ -83,11 +83,6 @@
         box-shadow: 0 6px 25px rgba(255,255,255,0.7);
     }
 
-    .dropdown {
-        position: relative;
-        display: inline-block;
-        margin-top: 20px;
-    }
     .dropdown-content {
         display: none;
         position: relative;
@@ -97,6 +92,7 @@
         padding: 10px;
         z-index: 2;
         text-align: left;
+        margin-top: 10px;
     }
     .dropdown-content label {
         display: flex;
@@ -184,17 +180,18 @@
     
     <button class="btn" id="confirmBtn">Confirmar Presença</button>
     <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
+    
+    <!-- Botão "O que você vai trazer" sempre visível após confirmar -->
+    <button class="btn" id="showDropdownBtn" style="display:none;">O que você vai trazer? 🍖🎁</button>
 
-    <div class="dropdown" id="itemDropdown" style="display:none;">
-        <div class="dropdown-content">
-            <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
-            <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
-            <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
-            <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
-            <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
-            <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
-        </div>
-        <button class="btn" id="backBtn" style="margin-top: 15px;">← Voltar</button>
+    <div class="dropdown-content" id="itemDropdown">
+        <label><input type="radio" name="item" value="1kg Frango"> 1kg Frango <span class="count-badge" id="count-Frango">0/5</span></label>
+        <label><input type="radio" name="item" value="1kg Linguiça"> 1kg Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
+        <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
+        <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
+        <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Salsichão">0/5</span></label>
+        <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">999/999</span></label>
+        <button class="btn" id="backBtn" style="margin-top:15px;">← Voltar</button>
     </div>
 </div>
 
@@ -215,22 +212,24 @@
     }, 1000);
 
     const confirmBtn = document.getElementById("confirmBtn");
+    const showDropdownBtn = document.getElementById("showDropdownBtn");
     const itemDropdown = document.getElementById("itemDropdown");
     const overlay = document.getElementById("overlay");
     const backBtn = document.getElementById("backBtn");
 
     confirmBtn.addEventListener("click", () => {
-        Array.from(overlay.children).forEach(child => {
-            if(child.id !== "itemDropdown") child.style.display = "none";
-        });
+        confirmBtn.style.display = "none";
+        showDropdownBtn.style.display = "inline-block";
+    });
+
+    showDropdownBtn.addEventListener("click", () => {
         itemDropdown.style.display = "block";
+        showDropdownBtn.style.display = "none";
     });
 
     backBtn.addEventListener("click", () => {
         itemDropdown.style.display = "none";
-        Array.from(overlay.children).forEach(child => {
-            if(child.id !== "itemDropdown") child.style.display = "block";
-        });
+        showDropdownBtn.style.display = "inline-block";
     });
 
     const maxPorItem = 5;
@@ -241,62 +240,4 @@
     function atualizarContagens() {
         for(const key in itemCounts) {
             const badge = document.getElementById("count-" + key);
-            badge.textContent = itemCounts[key] + "/" + maxPorItem;
-            const label = badge.parentElement;
-            if(itemCounts[key] >= maxPorItem && key !== "Nenhuma das opções acima") {
-                label.classList.add("disabled");
-            } else {
-                label.classList.remove("disabled");
-            }
-        }
-    }
-    atualizarContagens();
-
-    const options = itemDropdown.querySelectorAll('input[name="item"]');
-    options.forEach(option => {
-        const label = option.parentElement;
-        option.addEventListener("click", () => {
-            const itemEscolhido = option.value;
-            if(label.classList.contains("disabled")) {
-                alert(itemEscolhido + " já está lotado! Escolha outro item.");
-                return;
-            }
-            const nome = prompt("Digite seu nome:");
-            if(!nome) return alert("Por favor, digite seu nome.");
-            let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : itemEscolhido;
-            if(itemEscolhido !== "Nenhuma das opções acima") {
-                itemCounts[itemEscolhido]++;
-                localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-            }
-            atualizarContagens();
-            const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
-            const numero = "5521973895209"; 
-            const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
-            window.open(url, "_blank");
-        });
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-        for(const key in itemCounts) itemCounts[key]=0;
-        localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-        atualizarContagens();
-        alert("Contadores zerados!");
-    });
-
-    // Bolinhas (neve) caindo
-    const bubblesContainer = document.getElementById('bubblesContainer');
-    const numBubbles = 30;
-    for(let i=0;i<numBubbles;i++){
-        let bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.style.width = Math.random()*15+10+'px';
-        bubble.style.height = bubble.style.width;
-        bubble.style.left = Math.random()*100+'vw';
-        bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
-        bubble.style.top = Math.random()*-10+'vh';
-        bubblesContainer.appendChild(bubble);
-    }
-</script>
-
-</body>
-</html>
+            badge.textContent = itemCounts[key] + "/" + maxPorItem
