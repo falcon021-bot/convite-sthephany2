@@ -88,7 +88,9 @@
         text-align: left;
     }
     .dropdown-content label {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin: 8px 0;
         font-size: 1.1em;
         cursor: pointer;
@@ -120,6 +122,12 @@
         pointer-events: none;
         cursor: not-allowed;
     }
+    .count-badge {
+        font-size: 0.9em;
+        background-color: rgba(0,0,0,0.6);
+        padding: 2px 6px;
+        border-radius: 6px;
+    }
 </style>
 </head>
 <body>
@@ -136,11 +144,11 @@
     <div class="dropdown" id="itemDropdown" style="display:none;">
         <button class="btn">O que você vai trazer? 🍖🎁</button>
         <div class="dropdown-content">
-            <label><input type="radio" name="item" value="Frango"> Frango</label>
-            <label><input type="radio" name="item" value="Linguiça"> Linguiça</label>
-            <label><input type="radio" name="item" value="Salsichão"> Salsichão</label>
-            <label><input type="radio" name="item" value="Pão de alho"> Pão de alho</label>
-            <label><input type="radio" name="item" value="Nenhuma das opções acima"> Nenhuma das opções acima</label>
+            <label><input type="radio" name="item" value="Frango"> Frango <span class="count-badge" id="count-Frango">0/5</span></label>
+            <label><input type="radio" name="item" value="Linguiça"> Linguiça <span class="count-badge" id="count-Linguiça">0/5</span></label>
+            <label><input type="radio" name="item" value="Salsichão"> Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
+            <label><input type="radio" name="item" value="Pão de alho"> Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
+            <label><input type="radio" name="item" value="Nenhuma das opções acima"> Nenhuma das opções acima <span class="count-badge" id="count-Nenhuma">0/5</span></label>
         </div>
     </div>
 </div>
@@ -179,37 +187,51 @@
 
     // Limite de 5 pessoas por item
     const maxPorItem = 5;
-    const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {};
+    const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {
+        "Frango":0,
+        "Linguiça":0,
+        "Salsichão":0,
+        "Pão de alho":0,
+        "Nenhuma das opções acima":0
+    };
+
+    function atualizarContagens() {
+        for(const key in itemCounts) {
+            const badge = document.getElementById("count-" + key);
+            badge.textContent = itemCounts[key] + "/" + maxPorItem;
+            const label = badge.parentElement;
+            if(itemCounts[key] >= maxPorItem && key !== "Nenhuma das opções acima") {
+                label.classList.add("disabled");
+            }
+        }
+    }
+
+    atualizarContagens();
 
     const options = itemDropdown.querySelectorAll('input[name="item"]');
     options.forEach(option => {
         const label = option.parentElement;
 
-        // Atualiza o estado se já estiver lotado
-        if(option.value !== "Nenhuma das opções acima") {
-            if(!itemCounts[option.value]) itemCounts[option.value] = 0;
-            if(itemCounts[option.value] >= maxPorItem) label.classList.add("disabled");
-        }
-
         option.addEventListener("click", () => {
-            if(label.classList.contains("disabled")) return;
+            const itemEscolhido = option.value;
+
+            if(label.classList.contains("disabled")) {
+                alert(itemEscolhido + " já está lotado! Escolha outro item.");
+                return; // Não envia WhatsApp
+            }
 
             const nome = prompt("Digite seu nome:");
             if(!nome) return alert("Por favor, digite seu nome.");
 
-            let itemEscolhido = option.value;
             let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : "1kg de " + itemEscolhido;
 
             // Incrementa contador se não for "Nenhuma das opções acima"
             if(itemEscolhido !== "Nenhuma das opções acima") {
                 itemCounts[itemEscolhido]++;
                 localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-                if(itemCounts[itemEscolhido] >= maxPorItem) {
-                    label.classList.add("disabled");
-                    option.checked = false;
-                    alert(itemEscolhido + " está lotado!");
-                }
             }
+
+            atualizarContagens();
 
             const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
             const numero = "5521973895209"; 
