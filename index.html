@@ -1,85 +1,156 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convite Interativo</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: url('seu-fundo.gif') no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            text-align: center;
-        }
-        .overlay {
-            background-color: rgba(0,0,0,0.6);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 0.2em;
-        }
-        p {
-            font-size: 1.5em;
-        }
-        .countdown {
-            font-size: 2em;
-            margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            color: #fff;
-            background-color: #e63946;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            background-color: #f77f00;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convite Interativo</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+        color: #fff;
+    }
+    /* Vídeo de fundo */
+    #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -2;
+    }
+    /* Overlay escura */
+    .overlay {
+        position: relative;
+        background-color: rgba(0,0,0,0.5);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        z-index: 1;
+    }
+    h1 {
+        font-size: 3em;
+        margin-bottom: 0.2em;
+    }
+    p {
+        font-size: 1.5em;
+    }
+    .countdown {
+        font-size: 2em;
+        margin: 20px 0;
+    }
+    .btn {
+        display: inline-block;
+        margin: 10px;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        color: #fff;
+        background-color: #e63946;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn:hover {
+        background-color: #f77f00;
+    }
+    /* Bolinhas animadas */
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.7);
+        animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+        0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
+        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+    /* Lista de itens */
+    .items {
+        margin-top: 20px;
+        text-align: left;
+        background: rgba(0,0,0,0.5);
+        padding: 15px;
+        border-radius: 10px;
+        max-width: 300px;
+        width: 90%;
+    }
+    .items h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    .items label {
+        display: block;
+        margin: 5px 0;
+        font-size: 1.1em;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-    <div class="overlay">
-        <h1>Convite da Sthephany</h1>
-        <p>Dia do aniversário: <strong>21/11/2025</strong></p>
-        <div class="countdown" id="countdown"></div>
-        <a href="https://api.whatsapp.com/send?phone=559999999999&text=Quero confirmar presença!" class="btn" target="_blank">Confirmar Presença</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
+
+<!-- Vídeo de fundo -->
+<video autoplay muted loop id="bg-video">
+    <source src="https://i.imgur.com/EBM3x8B.gif" type="video/mp4">
+</video>
+
+<div class="overlay">
+    <h1>Chamei, hein, Agora falta você confirmar🥳🎂</h1>
+    <p>Dia do aniversário: <strong>21/11/2025</strong></p>
+    <div class="countdown" id="countdown"></div>
+    
+    <a href="https://api.whatsapp.com/send?phone=5521973895209&text=Quero confirmar presença!" class="btn" target="_blank">Confirmar Presença</a>
+    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
+    
+    <!-- Lista de itens🍖 -->
+    <div class="items">
+        <h2>Nada de mãos vazias hein! 😂 O que você vai trazer pra minha festinha? 🎁🎂</h2>
+        <label><input type="checkbox" name="item" value="Frango"> Frango</label>
+        <label><input type="checkbox" name="item" value="Linguiça"> Linguiça</label>
+        <label><input type="checkbox" name="item" value="Salsichão"> Salsichão</label>
+        <label><input type="checkbox" name="item" value="Pão de alho"> Pão de alho</label>
+        <label><input type="checkbox" name="item" value="Nenhuma das opções acima"> Nenhuma das opções acima</label>
     </div>
+</div>
 
-    <script>
-        const countDownDate = new Date("Nov 21, 2025 00:00:00").getTime();
+<script>
+    // Contagem regressiva
+    const countDownDate = new Date("Nov 21, 2025 00:00:00").getTime();
+    const x = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("countdown").innerHTML = days + " dias " + hours + "h " + minutes + "m " + seconds + "s ";
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").innerHTML = "É HOJE!😱";
+        }
+    }, 1000);
 
-        const x = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = countDownDate - now;
+    // Criar bolinhas
+    const numBubbles = 30;
+    for(let i = 0; i < numBubbles; i++){
+        let bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.style.width = Math.random()*20 + 10 + 'px';
+        bubble.style.height = bubble.style.width;
+        bubble.style.left = Math.random()*100 + 'vw';
+        bubble.style.animationDuration = (Math.random()*5 + 5) + 's';
+        document.body.appendChild(bubble);
+    }
+</script>
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("countdown").innerHTML = days + " dias " + hours + "h "
-            + minutes + "m " + seconds + "s ";
-
-            if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("countdown").innerHTML = "É HOJE!";
-            }
-        }, 1000);
-    </script>
 </body>
 </html>
