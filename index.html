@@ -1,149 +1,85 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Convite de Aniversário</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: 'Arial', sans-serif;
-        color: #fff;
-        text-align: center;
-        background: #000;
-        overflow: hidden;
-        position: relative;
-    }
-
-    /* Fundo GIF desfocado */
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: url('https://i.imgur.com/EBM3x8B.gif') center/cover no-repeat;
-        filter: blur(4px) brightness(0.6);
-        z-index: -2;
-    }
-
-    /* Bolinhas brancas voando */
-    .bola {
-        position: absolute;
-        width: 10px; height: 10px;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        animation: voar linear infinite;
-        z-index: 1;
-    }
-
-    @keyframes voar {
-        0% { transform: translateY(0) translateX(0); }
-        50% { transform: translateY(-20px) translateX(20px); }
-        100% { transform: translateY(0) translateX(0); }
-    }
-
-    .conteudo {
-        position: relative;
-        z-index: 2;
-        padding: 50px 20px;
-    }
-
-    h1 {
-        font-size: 3em;
-        margin-bottom: 20px;
-    }
-
-    #contador {
-        font-size: 2em;
-        margin-bottom: 30px;
-    }
-
-    .botoes {
-        margin-top: 30px;
-    }
-
-    .btn {
-        display: inline-block;
-        background: #fff;
-        color: #000;
-        padding: 15px 25px;
-        margin: 10px;
-        font-size: 1.2em;
-        border-radius: 12px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .btn:hover {
-        background: #f0f0f0;
-    }
-
-    #qrcode {
-        margin-top: 20px;
-        display: inline-block;
-        background: #fff;
-        padding: 10px;
-        border-radius: 12px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite Interativo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('seu-fundo.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            text-align: center;
+        }
+        .overlay {
+            background-color: rgba(0,0,0,0.6);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.2em;
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .countdown {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #e63946;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background-color: #f77f00;
+        }
+    </style>
 </head>
 <body>
-
-<div class="conteudo">
-    <h1>Você está convidado(a)!</h1>
-    <div id="contador"></div>
-
-    <div class="botoes">
-        <a class="btn" href="https://www.google.com/maps?q=R. Benito Juarez, 95 - Anil" target="_blank">Ver no Google Maps</a>
-        <div id="qrcode"></div>
+    <div class="overlay">
+        <h1>Convite da Sthephany</h1>
+        <p>Dia do aniversário: <strong>21/11/2025</strong></p>
+        <div class="countdown" id="countdown"></div>
+        <a href="https://api.whatsapp.com/send?phone=559999999999&text=Quero confirmar presença!" class="btn" target="_blank">Confirmar Presença</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Rua+Benito+Juarez+95+Anil+Jacarepaguá+Rio+de+Janeiro" class="btn" target="_blank">Ver no Maps</a>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-    // Contador regressivo
-    const dataEvento = new Date('2025-11-21T00:00:00');
-    const contadorEl = document.getElementById('contador');
+    <script>
+        const countDownDate = new Date("Nov 21, 2025 00:00:00").getTime();
 
-    function atualizarContador() {
-        const agora = new Date();
-        const diff = dataEvento - agora;
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
 
-        if(diff <= 0){
-            contadorEl.innerHTML = "Feliz Aniversário!";
-            return;
-        }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutos = Math.floor((diff / (1000 * 60)) % 60);
-        const segundos = Math.floor((diff / 1000) % 60);
+            document.getElementById("countdown").innerHTML = days + " dias " + hours + "h "
+            + minutes + "m " + seconds + "s ";
 
-        contadorEl.innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-    }
-
-    setInterval(atualizarContador, 1000);
-    atualizarContador();
-
-    // QR Code apontando para o mesmo link do convite
-    new QRCode(document.getElementById("qrcode"), {
-    text: "https://github.com/falcon021-bot/convite-sthephany2",
-    width: 150,
-    height: 150
-});
-
-    // Bolinhas voando
-    const quantidadeBolas = 30;
-    for(let i=0; i<quantidadeBolas; i++){
-        const bola = document.createElement('div');
-        bola.classList.add('bola');
-        bola.style.top = Math.random() * window.innerHeight + 'px';
-        bola.style.left = Math.random() * window.innerWidth + 'px';
-        bola.style.animationDuration = (5 + Math.random() * 5) + 's';
-        bola.style.width = bola.style.height = (5 + Math.random() * 15) + 'px';
-        document.body.appendChild(bola);
-    }
-</script>
-
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "É HOJE!";
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
