@@ -264,7 +264,19 @@
         alert("Contadores zerados!");
     });
 
-    // Bolinhas (neve)
+    <!-- Bolinhas (neve) -->
+<div id="bubblesContainer"></div>
+
+<script>
+    const bubblesContainer = document.getElementById('bubblesContainer');
+    bubblesContainer.style.position = 'fixed';
+    bubblesContainer.style.top = '0';
+    bubblesContainer.style.left = '0';
+    bubblesContainer.style.width = '100%';
+    bubblesContainer.style.height = '100%';
+    bubblesContainer.style.zIndex = '9999';
+    bubblesContainer.style.pointerEvents = 'none'; // não atrapalha cliques
+
     const numBubbles = 30;
     for(let i=0;i<numBubbles;i++){
         let bubble = document.createElement('div');
@@ -273,7 +285,7 @@
         bubble.style.height = bubble.style.width;
         bubble.style.left = Math.random()*100+'vw';
         bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
-        document.body.appendChild(bubble);
+        bubblesContainer.appendChild(bubble);
     }
 </script>
 
