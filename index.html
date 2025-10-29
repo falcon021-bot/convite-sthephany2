@@ -24,18 +24,22 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
+        align-items: flex-end; /* textos alinhados à direita */
         padding: 20px;
         z-index: 1;
-        text-align: center;
+        text-align: right; /* textos do overlay alinhados à direita */
     }
-    h1 { font-size: 3em; margin-bottom: 0.2em; text-align:center; }
-    p { font-size: 1.5em; text-align:center; }
+    h1 { font-size: 3em; margin-bottom: 0.2em; }
+    p { font-size: 1.5em; }
     .countdown { font-size: 2em; margin: 20px 0; }
 
-    /* Ajuste h1 para celular */
+    /* Ajuste h1, p e countdown para celulares */
     @media (max-width: 600px) {
-        h1 { text-align: left; margin-left: 10%; }
+        .overlay {
+            align-items: flex-end;
+            text-align: right;
+            padding-right: 10%;
+        }
     }
 
     .btn {
@@ -146,7 +150,6 @@
         cursor: pointer;
     }
 
-    /* Bolinhas (neve) sobre toda a tela */
     #bubblesContainer {
         position: fixed;
         top: 0;
@@ -246,56 +249,3 @@
                 label.classList.add("disabled");
             } else {
                 label.classList.remove("disabled");
-            }
-        }
-    }
-    atualizarContagens();
-
-    const options = itemDropdown.querySelectorAll('input[name="item"]');
-    options.forEach(option => {
-        const label = option.parentElement;
-        option.addEventListener("click", () => {
-            const itemEscolhido = option.value;
-            if(label.classList.contains("disabled")) {
-                alert(itemEscolhido + " já está lotado! Escolha outro item.");
-                return;
-            }
-            const nome = prompt("Digite seu nome:");
-            if(!nome) return alert("Por favor, digite seu nome.");
-            let textoItem = itemEscolhido === "Nenhuma das opções acima" ? itemEscolhido : itemEscolhido;
-            if(itemEscolhido !== "Nenhuma das opções acima") {
-                itemCounts[itemEscolhido]++;
-                localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-            }
-            atualizarContagens();
-            const mensagem = `Olá, sou ${nome}, estou confirmando presença e vou levar: ${textoItem}`;
-            const numero = "5521973895209"; 
-            const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensagem)}`;
-            window.open(url, "_blank");
-        });
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-        for(const key in itemCounts) itemCounts[key]=0;
-        localStorage.setItem("itemCounts", JSON.stringify(itemCounts));
-        atualizarContagens();
-        alert("Contadores zerados!");
-    });
-
-    // Bolinhas (neve) caindo
-    const bubblesContainer = document.getElementById('bubblesContainer');
-    const numBubbles = 30;
-    for(let i=0;i<numBubbles;i++){
-        let bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.style.width = Math.random()*15+10+'px';
-        bubble.style.height = bubble.style.width;
-        bubble.style.left = Math.random()*100+'vw';
-        bubble.style.animationDuration = (Math.random()*25 + 20)+'s';
-        bubble.style.top = Math.random()*-10+'vh';
-        bubblesContainer.appendChild(bubble);
-    }
-</script>
-
-</body>
-</html>
