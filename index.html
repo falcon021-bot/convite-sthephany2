@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+🦋<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -151,7 +151,9 @@ p { font-size: 1.5em; text-align:right; }
         <label><input type="radio" name="item" value="1kg Salsichão"> 1kg Salsichão <span class="count-badge" id="count-Salsichão">0/5</span></label>
         <label><input type="radio" name="item" value="1 bandeja de Pão de alho"> 1 bandeja de Pão de alho <span class="count-badge" id="count-Pão de alho">0/5</span></label>
         <label><input type="radio" name="item" value="500g carne (alcatra ou contra-filé)"> 500g (alcatra ou contra-filé) <span class="count-badge" id="count-Carne">0/5</span></label>
+        <!-- ALTERAÇÃO AQUI -->
         <label><input type="radio" name="item" value="Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48."> Vou enviar R$20,00 via PIX ✨ Chave: 190.120.107-48. <span class="count-badge" id="count-Nenhuma">0/999</span></label>
+        <!-- FIM DA ALTERAÇÃO -->
         
         <button class="btn" id="backBtn" style="margin-top:15px;">← Voltar</button>
     </div>
@@ -212,7 +214,7 @@ const itemCounts = JSON.parse(localStorage.getItem("itemCounts")) || {
 function atualizarContagens() {
     for(const key in itemCounts){
         const badge = document.getElementById("count-" + key);
-        if(badge) badge.textContent = itemCounts[key] + "/" + maxPorItem;
+        if(badge) badge.textContent = key === "Nenhuma" ? itemCounts[key] + "/999" : itemCounts[key] + "/" + maxPorItem;
         const label = badge?.parentElement;
         if(label){
             if(itemCounts[key]>=maxPorItem && key!=="Nenhuma") label.classList.add("disabled");
